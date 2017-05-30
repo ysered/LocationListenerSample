@@ -10,24 +10,30 @@ import android.support.v4.app.ActivityCompat
  * if they aren't enabled.
  *
  * @param [requestCode] to filter results in [Activity.onRequestPermissionsResult]
+ * @param [onGranted] function to be executed if permissions already granted
  */
-fun Activity.requestLocationPermissions(requestCode: Int): Unit {
+fun Activity.requestLocationPermissionsIfNeeded(requestCode: Int, onGranted: () -> Unit): Unit {
     requestPermissionsIfNeeded(requestCode,
+            onGranted,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION)
 }
 
 /**
- * Requests [permissions] if any of them aren't enabled.
+ * Requests permissions if some of them aren't granted.
  *
  * @param [requestCode] to filter results in [Activity.onRequestPermissionsResult]
+ * @param [onGranted] function to be executed if permissions already granted
+ * @param [permissions] array of permission to be requested if some of them aren't grated
  */
-fun Activity.requestPermissionsIfNeeded(requestCode: Int, vararg permissions: String): Unit {
+fun Activity.requestPermissionsIfNeeded(requestCode: Int, onGranted: () -> Unit, vararg permissions: String): Unit {
     val toRequest = permissions
             .filter { ActivityCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED }
             .toTypedArray()
     if (toRequest.isNotEmpty()) {
         ActivityCompat.requestPermissions(this, toRequest, requestCode)
+    } else {
+        onGranted()
     }
 }
 
