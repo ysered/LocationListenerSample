@@ -16,6 +16,8 @@ class MainActivity : LifecycleActivity() {
     val longitudeText: TextView by lazy { findViewById(R.id.longitudeText) as TextView }
     val latitudeText: TextView by lazy { findViewById(R.id.latitudeText) as TextView }
 
+    val locationObserver by lazy { LocationLifecycleObserver(this, this, locationListener) }
+
     val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location?) {
             if (location != null) {
@@ -30,7 +32,6 @@ class MainActivity : LifecycleActivity() {
 
         override fun onProviderDisabled(provider: String?) {}
     }
-    val locationObserver = LocationLifecycleObserver(this, this, locationListener)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
