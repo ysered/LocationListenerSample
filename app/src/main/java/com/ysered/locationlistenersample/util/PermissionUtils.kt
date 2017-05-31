@@ -45,9 +45,9 @@ fun Activity.requestPermissionsIfNeeded(requestCode: Int, onGranted: () -> Unit,
  * @param [onDenied] function to be executed if some or all permissions is denied
  */
 fun processPermissionResults(grantResults: IntArray, onGranted: () -> Unit, onDenied: () -> Unit) {
-    if (grantResults.any { it != PackageManager.PERMISSION_GRANTED }) {
-        onDenied()
-    } else {
+    if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
         onGranted()
+    } else {
+        onDenied()
     }
 }
