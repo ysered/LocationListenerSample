@@ -9,6 +9,7 @@ import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationListener
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.ysered.locationlistenersample.util.debug
 
 @SuppressWarnings("MissingPermission")
 class LocationLiveData(context: Context) : LiveData<Location>(),
@@ -29,6 +30,7 @@ class LocationLiveData(context: Context) : LiveData<Location>(),
     override fun onActive() {
         super.onActive()
         googleApiClient.connect()
+        debug("Become active!")
     }
 
     override fun onInactive() {
@@ -37,6 +39,7 @@ class LocationLiveData(context: Context) : LiveData<Location>(),
             LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this)
         }
         googleApiClient.disconnect()
+        debug("Become inactive!")
     }
 
     override fun onConnected(bundle: Bundle?) {
