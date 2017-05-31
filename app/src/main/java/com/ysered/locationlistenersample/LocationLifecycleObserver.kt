@@ -34,6 +34,10 @@ class LocationLifecycleObserver(context: Context, private val listener: Location
     fun onRemoveLocationListener() {
         debug("Disconnecting...")
         googleApiClient?.disconnect()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroyLocationListener() {
         googleApiClient = null
     }
 
