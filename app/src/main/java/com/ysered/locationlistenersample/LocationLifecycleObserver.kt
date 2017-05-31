@@ -15,10 +15,11 @@ import com.ysered.locationlistenersample.util.debug
 class LocationLifecycleObserver(context: Context, private val listener: LocationListener)
     : LifecycleObserver, GoogleApiClient.ConnectionCallbacks {
 
-    private val locationRequest = LocationRequest.create()
-            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-            .setInterval(1000)
-            .setFastestInterval(1000)
+    private val locationRequest = LocationRequest.create().apply {
+        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        interval = 1000
+        fastestInterval = 1000
+    }
 
     private var googleApiClient: GoogleApiClient? = GoogleApiClient.Builder(context)
             .addConnectionCallbacks(this)
