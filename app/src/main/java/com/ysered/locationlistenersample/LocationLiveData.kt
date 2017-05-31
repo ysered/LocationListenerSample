@@ -1,6 +1,6 @@
 package com.ysered.locationlistenersample
 
-import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 import android.location.Location
 import android.os.Bundle
@@ -12,7 +12,7 @@ import com.google.android.gms.location.LocationServices
 import com.ysered.locationlistenersample.util.debug
 
 @SuppressWarnings("MissingPermission")
-class LocationLiveData(context: Context) : LiveData<Location>(),
+class LocationLiveData(context: Context) : MutableLiveData<Location>(),
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
