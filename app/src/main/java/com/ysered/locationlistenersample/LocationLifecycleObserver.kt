@@ -43,10 +43,10 @@ class LocationLifecycleObserver(context: Context, private val listener: Location
 
     override fun onConnected(bundle: Bundle?) {
         debug("Google API client is connected!")
-        if (googleApiClient != null) {
-            val lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
+        googleApiClient?.let {
+            val lastLocation = LocationServices.FusedLocationApi.getLastLocation(it)
             listener.onLocationChanged(lastLocation)
-            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, listener)
+            LocationServices.FusedLocationApi.requestLocationUpdates(it, locationRequest, listener)
             debug("Requesting location updates...")
         }
     }

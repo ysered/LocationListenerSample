@@ -39,9 +39,9 @@ class MainActivity : LifecycleActivity() {
         debug("Binding location observer...")
         locationViewModel.location.observe(this, Observer<Location?> { location ->
             debug("Updating location: longitude = ${location?.longitude}, latitude = ${location?.latitude}")
-            if (location != null) {
-                longitudeText.text = location.longitude.toString()
-                latitudeText.text = location.latitude.toString()
+            location?.let {
+                longitudeText.text = it.longitude.toString()
+                latitudeText.text = it.latitude.toString()
             }
         })
     }

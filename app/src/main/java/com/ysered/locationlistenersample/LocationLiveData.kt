@@ -44,9 +44,7 @@ class LocationLiveData(context: Context) : MutableLiveData<Location>(),
 
     override fun onConnected(bundle: Bundle?) {
         val lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
-        if (lastLocation != null) {
-            value = lastLocation
-        }
+        lastLocation?.let { value = it }
         if (hasObservers()) {
             LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this)
         }
@@ -57,8 +55,6 @@ class LocationLiveData(context: Context) : MutableLiveData<Location>(),
     override fun onConnectionFailed(result: ConnectionResult) {}
 
     override fun onLocationChanged(location: Location?) {
-        if (location != null) {
-            value = location
-        }
+        location?.let { value = it }
     }
 }
