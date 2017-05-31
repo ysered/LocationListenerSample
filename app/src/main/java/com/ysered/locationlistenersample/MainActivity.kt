@@ -16,8 +16,6 @@ class MainActivity : LifecycleActivity() {
     val longitudeText: TextView by lazy { findViewById(R.id.longitudeText) as TextView }
     val latitudeText: TextView by lazy { findViewById(R.id.latitudeText) as TextView }
 
-    val locationObserver by lazy { LocationLifecycleObserver(this, this, locationListener) }
-
     val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location?) {
             if (location != null) {
@@ -37,15 +35,20 @@ class MainActivity : LifecycleActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        requestLocationPermissionsIfNeeded(REQUEST_LOCATION_PERMISSION_CODE, onGranted = { locationObserver.bind() })
+        requestLocationPermissionsIfNeeded(REQUEST_LOCATION_PERMISSION_CODE, onGranted = { bindLocationObserver() })
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_LOCATION_PERMISSION_CODE) {
             processPermissionResults(grantResults,
-                    onGranted = { locationObserver.bind() },
+                    onGranted = { bindLocationObserver() },
                     onDenied = { showToast("Please enable location permissions") })
         }
+    }
+
+    private fun bindLocationObserver() {
+        val observer = LocationLifecycleObserver(this, locationListener)
+        lifecycle.addObserver(observer)
     }
 }

@@ -2,23 +2,15 @@ package com.ysered.locationlistenersample
 
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.OnLifecycleEvent
 import android.content.Context
 import android.location.LocationListener
 import android.location.LocationManager
 
 @SuppressWarnings("MissingPermission")
-class LocationLifecycleObserver(private val lifecycleOwner: LifecycleOwner,
-                                private val context: Context,
-                                private val listener: LocationListener) : LifecycleObserver {
+class LocationLifecycleObserver(context: Context, private val listener: LocationListener) : LifecycleObserver {
 
-    private var locationManager: LocationManager? = null
-
-    fun bind() {
-        lifecycleOwner.lifecycle.addObserver(this)
-        locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-    }
+    private var locationManager: LocationManager? = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onAddLocationListener() {
