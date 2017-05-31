@@ -4,26 +4,48 @@ import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleObserver
 import android.arch.lifecycle.OnLifecycleEvent
 import android.content.Context
-import android.location.LocationListener
-import android.location.LocationManager
+import android.os.Bundle
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.location.LocationListener
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.ysered.locationlistenersample.util.debug
 
 @SuppressWarnings("MissingPermission")
-class LocationLifecycleObserver(context: Context, private val listener: LocationListener) : LifecycleObserver {
+class LocationLifecycleObserver(context: Context, private val listener: LocationListener)
+    : LifecycleObserver, GoogleApiClient.ConnectionCallbacks {
 
-    private var locationManager: LocationManager? = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private val locationRequest = LocationRequest.create()
+            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+            .setInterval(1000)
+            .setFastestInterval(1000)
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    private var googleApiClient: GoogleApiClient? = GoogleApiClient.Builder(context)
+            .addConnectionCallbacks(this)
+            .addApi(LocationServices.API)
+            .build()
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onAddLocationListener() {
-        locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0f, listener)
-        val lastKnownLocation = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-        if (lastKnownLocation != null) {
-            listener.onLocationChanged(lastKnownLocation)
+        googleApiClient?.connect()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun onRemoveLocationListener() {
+        debug("Disconnecting...")
+        googleApiClient?.disconnect()
+        googleApiClient = null
+    }
+
+    override fun onConnected(bundle: Bundle?) {
+        debug("Google API client is connected!")
+        if (googleApiClient != null) {
+            val lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient)
+            listener.onLocationChanged(lastLocation)
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, listener)
+            debug("Requesting location updates...")
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun onRemoveLocationListener() {
-        locationManager?.removeUpdates(listener)
-        locationManager = null
-    }
+    override fun onConnectionSuspended(cause: Int) {}
 }
