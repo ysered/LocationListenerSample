@@ -2,6 +2,7 @@ package com.ysered.locationlistenersample
 
 import android.arch.lifecycle.LifecycleActivity
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.location.Location
 import android.os.Bundle
 import android.widget.TextView
@@ -16,6 +17,7 @@ class MainActivity : LifecycleActivity() {
 
     val longitudeText: TextView by lazy { findViewById(R.id.longitudeText) as TextView }
     val latitudeText: TextView by lazy { findViewById(R.id.latitudeText) as TextView }
+    val locationViewModel: LocationViewModel by lazy { ViewModelProviders.of(this).get(LocationViewModel::class.java) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +36,8 @@ class MainActivity : LifecycleActivity() {
     }
 
     private fun bindLocationObserver() {
-        LocationLiveData(this).observe(this, Observer<Location?> { location ->
+        debug("Binding location observer...")
+        locationViewModel.location.observe(this, Observer<Location?> { location ->
             debug("Updating location: longitude = ${location?.longitude}, latitude = ${location?.latitude}")
             if (location != null) {
                 longitudeText.text = location.longitude.toString()
