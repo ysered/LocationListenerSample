@@ -45,7 +45,7 @@ fun Activity.requestPermissionsIfNeeded(requestCode: Int, onGranted: () -> Unit,
  * @param [onDenied] function to be executed if some or all permissions is denied
  */
 fun processPermissionResults(grantResults: IntArray, onGranted: () -> Unit, onDenied: () -> Unit) {
-    val isAllGranted = grantResults.filter { it != PackageManager.PERMISSION_GRANTED }.isEmpty()
+    val isAllGranted = grantResults.any { it != PackageManager.PERMISSION_GRANTED }
     if (isAllGranted) {
         onGranted()
     } else {
